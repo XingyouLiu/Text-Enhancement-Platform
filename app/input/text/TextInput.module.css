@@ -1,0 +1,5 @@
+.wideTextarea {
+  width: 120% !important;
+  max-width: 120% !important;
+  margin-left: -10%;
+}
