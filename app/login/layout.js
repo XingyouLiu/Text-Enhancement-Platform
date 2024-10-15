@@ -1,13 +1,11 @@
-// app/input/layout.js
+// app/login/layout.js
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
-export default function InputLayout({ children }) {
+export default function LoginLayout({ children }) {
   return (
     <>
       <Header />
       <main>{children}</main>
-      <Footer />
     </>
   );
 }

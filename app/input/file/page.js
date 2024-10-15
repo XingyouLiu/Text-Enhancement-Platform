@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/libs/supabaseClient';
+import ButtonGradient from '@/components/ButtonGradient';
 
 export default function FileUpload() {
   const { session, loading } = useAuth();
@@ -59,11 +60,6 @@ export default function FileUpload() {
     }
   };
 
-  const updateTokensToSpend = (words) => {
-    const tokens = Math.round(words);
-    setTokensToSpend(tokens);
-  };
-
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -88,7 +84,6 @@ export default function FileUpload() {
           `Do you want to proceed?`;
 
         if (window.confirm(confirmMessage)) {
-          // If user confirms, proceed with the upload
           const uploadResponse = await fetch('/api/upload-docx', {
             method: 'POST',
             headers: {
@@ -172,7 +167,6 @@ export default function FileUpload() {
     setTokensToSpend(0);
     setIsSubmitted(false);
     setWordCount(0);
-    // Reset the file input
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput) {
       fileInput.value = '';
@@ -180,46 +174,54 @@ export default function FileUpload() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-base-200">
-      <h1 className="text-4xl font-bold mb-8">Upload File</h1>
-      <form onSubmit={handleUpload} className="w-full max-w-lg">
-        <input
-          type="file"
-          accept=".docx"
-          onChange={handleFileChange}
-          className="file-input file-input-bordered w-full mb-4"
-          disabled={isLoading || isSubmitted}
-        />
-        <button 
-          type="submit" 
-          className="btn btn-primary w-full mb-4" 
-          disabled={isLoading || !isValidFile || !isValidSize || isSubmitted}
-        >
-          {isLoading ? 'Uploading...' : 'Submit'}
-        </button>
-      </form>
-      {isUploaded && (
-        <div className="mb-4">
-          <p>Word count: {wordCount}</p>
-          <p>Tokens to spend: {tokensToSpend}</p>
-        </div>
-      )}
-      <div className="w-full max-w-lg flex justify-between">
-        <button 
-          onClick={handleProcess} 
-          className="btn btn-secondary flex-grow mr-2" 
-          disabled={!isUploaded || isLoading}
-        >
-          {isLoading ? 'Processing...' : 'Process'}
-        </button>
-        <button 
-          onClick={handleReset} 
-          className="btn btn-outline flex-grow ml-2" 
-          disabled={isLoading}
-        >
-          Reset
-        </button>
+    <section className="relative overflow-hidden bg-gradient-to-br from-base-200 to-base-100 min-h-screen flex items-center justify-center">
+      <div className="absolute inset-0 bg-grid-primary/[0.05] bg-grid-8 [mask-image:linear-gradient(to_bottom,white,rgba(255,255,255,0.1))] pointer-events-none" />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <h1 className="font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight text-primary mb-8 text-center">
+          Upload Document
+        </h1>
+        <p className="mt-6 text-xl md:text-2xl text-base-content/80 max-w-3xl mx-auto mb-12 text-center">
+          Upload your .docx file for AI-powered enhancement.
+        </p>
+        <form onSubmit={handleUpload} className="w-full max-w-2xl mx-auto">
+          <div className="mb-6">
+            <input
+              type="file"
+              accept=".docx"
+              onChange={handleFileChange}
+              className="file-input file-input-bordered w-full bg-base-100 text-base-content"
+              disabled={isLoading || isSubmitted}
+            />
+          </div>
+          <div className="flex justify-center gap-4">
+            <ButtonGradient
+              title={isLoading ? 'Uploading...' : 'Submit'}
+              onClick={handleUpload}
+              disabled={isLoading || !isValidFile || !isValidSize || isSubmitted}
+              className="btn-lg text-lg px-8 py-3 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
+            />
+            <ButtonGradient
+              title={isLoading ? 'Processing...' : 'Process'}
+              onClick={handleProcess}
+              disabled={!isUploaded || isLoading}
+              className="btn-lg text-lg px-8 py-3 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
+            />
+            <ButtonGradient
+              title="Reset"
+              onClick={handleReset}
+              disabled={isLoading}
+              className="btn-lg text-lg px-8 py-3 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
+            />
+          </div>
+        </form>
+        {isUploaded && (
+          <div className="mt-8 text-center">
+            <p className="text-lg text-base-content/80">Word count: {wordCount}</p>
+            <p className="text-lg text-base-content/80">Tokens to spend: {tokensToSpend}</p>
+          </div>
+        )}
       </div>
-    </div>
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-base-100 to-transparent" />
+    </section>
   );
 }

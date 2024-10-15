@@ -6,9 +6,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import ButtonGradient from '@/components/ButtonGradient';
 
-// Add this import at the top of your file
-import styles from './TextInput.module.css';
-
 export default function TextInput() {
   const { session, loading } = useAuth();
   const router = useRouter();
@@ -127,42 +124,41 @@ export default function TextInput() {
     }
   };
 
-  const textareaStyle = {
-    width: '180%',
-    maxWidth: '200%',
-    marginLeft: '-20%',
-  };
-
   return (
-    <section className="flex justify-center items-center w-full bg-base-200/50 text-base-content py-20 lg:py-32">
-      <div className="flex flex-col max-w-5xl gap-16 md:gap-20 px-4">
-        <h2 className="font-black text-4xl md:text-6xl tracking-[-0.02em] text-center">
+    <section className="relative overflow-hidden bg-gradient-to-br from-base-200 to-base-100 min-h-screen flex items-center justify-center">
+      <div className="absolute inset-0 bg-grid-primary/[0.05] bg-grid-8 [mask-image:linear-gradient(to_bottom,white,rgba(255,255,255,0.1))] pointer-events-none" />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <h1 className="font-extrabold text-5xl md:text-7xl lg:text-8xl tracking-tight text-primary mb-8 text-center">
           Input Your Text
-        </h2>
-        <div className="flex flex-col w-full h-fit gap-4 lg:gap-10 text-text-default">
-          <form onSubmit={handleSubmit} className="w-full">
-            <div className="mb-6">
-              <textarea
-                style={textareaStyle}
-                className="textarea textarea-bordered w-full h-96 bg-base-100 text-base-content text-lg p-6"
-                value={text}
-                onChange={handleTextChange}
-                placeholder="Input your text here (400-15000 words)..."
-                disabled={isProcessing}
-              ></textarea>
-              <div className="flex justify-between mt-2 text-sm text-base-content/60">
-                <p>Word count: {wordCount}</p>
-                <p>Tokens to spend: {tokensToSpend}</p>
-              </div>
+        </h1>
+        <p className="mt-6 text-xl md:text-2xl text-base-content/80 max-w-3xl mx-auto mb-12 text-center">
+          Enter your text below for AI-powered enhancement.
+        </p>
+        <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
+          <div className="mb-6">
+            <textarea
+              className="textarea textarea-bordered w-full h-96 bg-base-100 text-base-content text-lg p-6 rounded-lg shadow-lg"
+              value={text}
+              onChange={handleTextChange}
+              placeholder="Input your text here (400-15000 words)..."
+              disabled={isProcessing}
+            ></textarea>
+            <div className="flex justify-between mt-2 text-sm text-base-content/60">
+              <p>Word count: {wordCount}</p>
+              <p>Tokens to spend: {tokensToSpend}</p>
             </div>
+          </div>
+          <div className="flex justify-center">
             <ButtonGradient
               title={isLoading ? 'Processing...' : 'Process'}
               onClick={handleSubmit}
               disabled={isLoading || isProcessing}
+              className="btn-lg text-lg px-8 py-3 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"
             />
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-base-100 to-transparent" />
     </section>
   );
 }

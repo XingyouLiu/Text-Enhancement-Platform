@@ -1,13 +1,11 @@
-// app/input/layout.js
+// app/forgot-password/layout.js
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
-export default function InputLayout({ children }) {
+export default function ForgotPasswordLayout({ children }) {
   return (
     <>
       <Header />
       <main>{children}</main>
-      <Footer />
     </>
   );
 }
