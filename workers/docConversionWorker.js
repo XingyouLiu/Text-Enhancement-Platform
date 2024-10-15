@@ -7,12 +7,10 @@ const docx = require('docx');
 require('dotenv').config({ path: '.env.local' });
 const connectMongo = require('../libs/mongoose');
 
-// 创建文档转换队列
 const docConversionQueue = new Bull('docConversion', {
   redis: { port: 6379, host: '127.0.0.1' }
 });
 
-// 创建 S3 客户端
 const s3Client = new S3Client({
   region: "eu-west-1",
   credentials: {
@@ -29,7 +27,6 @@ docConversionQueue.process(async (job) => {
 
     const { id } = job.data;
     
-    // 从 MongoDB 获取文本内容
     const content = await collection.findOne({ _id: new ObjectId(id) });
     
     if (!content) {
@@ -38,10 +35,8 @@ docConversionQueue.process(async (job) => {
     
     console.log('Processing text content from MongoDB');
 
-    // 将文本内容分割成段落
     const paragraphs = content.content.split(/\n\s*\n/);
 
-    // 创建文档
     const doc = new docx.Document({
       sections: [{
         properties: {},
@@ -49,17 +44,15 @@ docConversionQueue.process(async (job) => {
           new docx.Paragraph({
             children: [new docx.TextRun(paragraph.trim())],
             spacing: {
-              after: 240, // 这相当于一个空行（约12pt）
+              after: 240, 
             },
           })
         ),
       }],
     });
 
-    // 生成 .docx 文件的 buffer
     const buffer = await docx.Packer.toBuffer(doc);
 
-    // 上传到 S3
     const key = `${id}.docx`;
     const command = new PutObjectCommand({
       Bucket: process.env.S3_BUCKET_NAME,
@@ -70,7 +63,6 @@ docConversionQueue.process(async (job) => {
 
     await s3Client.send(command);
 
-    // 生成预签名 URL 用于获取对象
     const getCommand = new GetObjectCommand({
       Bucket: process.env.S3_BUCKET_NAME,
       Key: key,
@@ -81,7 +73,6 @@ docConversionQueue.process(async (job) => {
       ResponseContentDisposition: 'attachment; filename="document.docx"'
     });
 
-    // 更新 MongoDB
     await collection.updateOne(
       { _id: new ObjectId(id) },
       { 
