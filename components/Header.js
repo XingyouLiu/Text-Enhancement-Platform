@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from '@/hooks/useAuth';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import config from "@/config";
+import { motion } from "framer-motion";
 
 const links = [
   { href: "/#pricing", label: "Pricing" },
@@ -49,13 +50,22 @@ const Header = () => {
   );
 
   return (
-    <header className="bg-gradient-to-r from-primary to-accent">
+    <motion.header 
+      className="bg-gradient-to-r from-primary to-accent"
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <nav className="container flex items-center justify-between px-8 py-4 mx-auto" aria-label="Global">
-        <div className="flex lg:flex-1">
+        <motion.div 
+          className="flex lg:flex-1"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <Link className="flex items-center gap-2 shrink-0" href="/" title={`${config.appName} homepage`}>
             <span className="font-extrabold text-lg text-white">{config.appName}</span>
           </Link>
-        </div>
+        </motion.div>
         
         <div className="flex lg:hidden">
           <button type="button" className="text-white" onClick={() => setIsOpen(!isOpen)}>
@@ -68,9 +78,15 @@ const Header = () => {
 
         <div className="hidden lg:flex lg:justify-center lg:gap-12 lg:items-center">
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className="text-white hover:text-secondary transition-colors duration-300" title={link.label}>
-              {link.label}
-            </Link>
+            <motion.div
+              key={link.href}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Link href={link.href} className="text-white hover:text-secondary transition-colors duration-300" title={link.label}>
+                {link.label}
+              </Link>
+            </motion.div>
           ))}
         </div>
 
@@ -92,7 +108,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

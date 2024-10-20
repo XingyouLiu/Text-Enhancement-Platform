@@ -60,6 +60,11 @@ export default function FileUpload() {
     }
   };
 
+  const updateTokensToSpend = (words) => {
+    const tokens = Math.round(words);
+    setTokensToSpend(tokens);
+  };
+
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -84,6 +89,7 @@ export default function FileUpload() {
           `Do you want to proceed?`;
 
         if (window.confirm(confirmMessage)) {
+          // If user confirms, proceed with the upload
           const uploadResponse = await fetch('/api/upload-docx', {
             method: 'POST',
             headers: {

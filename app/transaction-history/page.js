@@ -58,7 +58,7 @@ export default function TransactionHistory() {
 
   if (authLoading || loading) return <div>Loading...</div>
   if (error) return <div>{error}</div>
-  if (!session) return null; // 防止在重定向前显示内容
+  if (!session) return null; 
 
   return (
     <div>
