@@ -21,7 +21,6 @@ const agent = new https.Agent({
 processingQueue.process(async (job) => {
   let connection;
   try {
-    // 使用 connectMongo 函数连接到数据库
     connection = await connectMongo();
     const db = connection.connection.db;
     const collection = db.collection('contents');
@@ -40,7 +39,6 @@ processingQueue.process(async (job) => {
       throw new Error('Content not found');
     }
 
-    // 调用微服务
     const response = await axios.post('https://localhost:8000/process_paper', 
       { text: content.content },
       { 
@@ -49,7 +47,6 @@ processingQueue.process(async (job) => {
       }
     );
     
-    // 更新文本内容和状态
     await collection.updateOne(
       { _id: new ObjectId(id) },
       { 
@@ -61,7 +58,6 @@ processingQueue.process(async (job) => {
       }
     );
 
-    // 添加文档到转换队列
     await docConversionQueue.add({ id: id });
     console.log(`Added processed content ${id} to document conversion queue`);
 
